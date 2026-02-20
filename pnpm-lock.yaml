@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       ani-client:
-        specifier: ^1.1.0
-        version: 1.1.0
+        specifier: ^1.2.0
+        version: 1.2.0
       next:
         specifier: 16.1.6
         version: 16.1.6(@babel/core@7.29.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -724,8 +724,8 @@ packages:
   ajv@6.12.6:
     resolution: {integrity: sha512-j3fVLgvTo527anyYyJOGTYJbG+vnnQYvE0m5mmkc1TK+nxAppkCLMIL0aZ4dblVCNoGShhm+kzE4ZUykBoMg4g==}
 
-  ani-client@1.1.0:
-    resolution: {integrity: sha512-bAlLGpJefOw378DoBUuibrmIwDipB11Dm2DJrDp1WPzWKx7N8/dIH3jvEZ7Dv9FHUBQgGZcwNbOvVJkoGfriJQ==}
+  ani-client@1.2.0:
+    resolution: {integrity: sha512-fTHH1l7HzVYSqnRkFaXIAQiygeVmPxCp8ktTqE2OaqEX2Kp5J7RAn45hBAwoBM1zzplB73h+XCds4uMLVg1Dgw==}
 
   ansi-styles@4.3.0:
     resolution: {integrity: sha512-zbB9rCJAT1rbjiVDb2hqKFHNYLxgtk8NURxZ3IZwD3F6NtxbXZQCnnSi1Lkx+IDohdPlFp222wVALIheZJQSEg==}
@@ -2561,7 +2561,7 @@ snapshots:
       json-schema-traverse: 0.4.1
       uri-js: 4.4.1
 
-  ani-client@1.1.0: {}
+  ani-client@1.2.0: {}
 
   ansi-styles@4.3.0:
     dependencies:
