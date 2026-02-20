@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const BASE = "https://https://ani-client-web.vercel.app/";
+const BASE = "https://ani-client-web.vercel.app/";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
