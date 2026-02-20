@@ -1,23 +1,26 @@
-import { CharacterSort } from "ani-client";
+import { AniListError, CharacterSort } from "ani-client";
 import { NextRequest, NextResponse } from "next/server";
 import { client } from "@/app/lib/client";
+import { clampPage } from "@/app/lib/utils";
+import { PER_PAGE_DEFAULT } from "@/app/lib/constants";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
-  const page = Math.max(1, parseInt(searchParams.get("page") ?? "1", 10) || 1);
+  const page = clampPage(searchParams.get("page"));
   const query = searchParams.get("q") ?? undefined;
-  const perPage = 20;
+  const perPage = PER_PAGE_DEFAULT;
 
   try {
     const data = await client.searchCharacters({
       query,
-      sort: query ? [CharacterSort.SEARCH_MATCH] : [CharacterSort.FAVOURITES],
+      sort: query ? [CharacterSort.SEARCH_MATCH] : ["FAVOURITES_DESC" as CharacterSort],
       page,
       perPage,
     });
 
     return NextResponse.json(data);
-  } catch {
-    return NextResponse.json({ results: [], pageInfo: {} }, { status: 500 });
+  } catch (err) {
+    const status = err instanceof AniListError ? err.status : 500;
+    return NextResponse.json({ results: [], pageInfo: {} }, { status });
   }
 }

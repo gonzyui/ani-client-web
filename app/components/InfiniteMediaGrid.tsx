@@ -9,7 +9,7 @@ interface InfiniteMediaGridProps {
   initialItems: Media[];
   initialPageInfo: PageInfo;
   type: "ANIME" | "MANGA";
-  category?: "trending" | "top" | "airing";
+  category?: "trending" | "top" | "airing" | "upcoming" | "season";
 }
 
 export default function InfiniteMediaGrid({
@@ -22,6 +22,7 @@ export default function InfiniteMediaGrid({
     initialItems,
     initialHasMore: initialPageInfo.hasNextPage ?? false,
     fetchUrl: (page) => `/api/browse?type=${type}&category=${category}&page=${page}`,
+    getKey: (m) => m.id,
   });
 
   return (
@@ -40,7 +41,7 @@ export default function InfiniteMediaGrid({
 
       {!hasMore && items.length > 0 && (
         <p className="mt-8 text-center text-sm text-muted">
-          You&apos;ve reached the end — {items.length} titles loaded
+          You've reached the end — {items.length} titles loaded
         </p>
       )}
     </>

@@ -16,9 +16,8 @@ export default function MediaCard({ media }: MediaCardProps) {
     media.coverImage?.medium;
 
   return (
-    <Link href={getMediaHref(media.id)} className="group anime-card block">
+    <Link href={getMediaHref(media.id, media.type)} className="group anime-card block">
       <div className="overflow-hidden rounded-xl border border-border bg-card">
-        {/* Cover Image */}
         <div className="relative aspect-[3/4] w-full overflow-hidden">
           {image ? (
             <Image
@@ -34,14 +33,12 @@ export default function MediaCard({ media }: MediaCardProps) {
             </div>
           )}
 
-          {/* Score badge */}
           {media.averageScore && (
             <div className="score-badge absolute right-2 top-2 flex items-center gap-1 rounded-md bg-background/90 px-2 py-1 text-xs font-semibold backdrop-blur-sm">
               <span className="text-score">★ {formatScore(media.averageScore)}</span>
             </div>
           )}
 
-          {/* Format badge */}
           {media.format && (
             <div className="absolute left-2 top-2 rounded-md bg-accent/90 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-white backdrop-blur-sm">
               {media.format.replace(/_/g, " ")}
@@ -49,7 +46,6 @@ export default function MediaCard({ media }: MediaCardProps) {
           )}
         </div>
 
-        {/* Info */}
         <div className="p-3">
           <h3 className="line-clamp-2 text-sm font-medium leading-snug text-foreground transition-colors duration-200 group-hover:text-accent-light">
             {title}

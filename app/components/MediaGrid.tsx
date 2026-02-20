@@ -1,4 +1,5 @@
 import type { Media } from "ani-client";
+import Link from "next/link";
 import MediaCard from "@/app/components/MediaCard";
 import FadeIn from "@/app/components/FadeIn";
 
@@ -28,12 +29,12 @@ export default function MediaGrid({
             )}
           </div>
           {viewAllHref && (
-            <a
+            <Link
               href={viewAllHref}
               className="text-sm font-medium text-accent-light transition-colors hover:text-accent"
             >
               View all &rarr;
-            </a>
+            </Link>
           )}
         </div>
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">

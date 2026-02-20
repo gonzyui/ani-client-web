@@ -40,7 +40,6 @@ export default async function CharacterPage({ params }: CharacterPageProps) {
   return (
     <main className="mx-auto min-h-screen max-w-4xl px-4 py-10 sm:px-6">
       <div className="flex flex-col gap-8 sm:flex-row">
-        {/* Character image */}
         <div className="shrink-0">
           {image ? (
             <Image
@@ -58,14 +57,12 @@ export default async function CharacterPage({ params }: CharacterPageProps) {
           )}
         </div>
 
-        {/* Info */}
         <div className="flex flex-col gap-4">
           <h1 className="text-3xl font-bold text-foreground">{name}</h1>
           {character.name.native && (
             <p className="text-lg text-muted">{character.name.native}</p>
           )}
 
-          {/* Meta badges */}
           <div className="flex flex-wrap gap-2">
             {character.gender && (
               <span className="rounded-lg bg-card px-3 py-1.5 text-sm text-muted">
@@ -84,22 +81,20 @@ export default async function CharacterPage({ params }: CharacterPageProps) {
             )}
             {character.favourites != null && (
               <span className="score-badge rounded-lg bg-card px-3 py-1.5 text-sm font-semibold text-score">
-                ♥ {character.favourites.toLocaleString()}
+                ♥ {character.favourites.toLocaleString('en-US')}
               </span>
             )}
           </div>
 
-          {/* Description */}
           {description && (
             <div>
               <h2 className="mb-2 text-sm font-semibold uppercase tracking-wider text-muted">
                 About
               </h2>
-              <p className="leading-relaxed text-zinc-400">{description}</p>
+              <p className="leading-relaxed text-muted">{description}</p>
             </div>
           )}
 
-          {/* AniList link */}
           {character.siteUrl && (
             <a
               href={character.siteUrl}
@@ -113,7 +108,6 @@ export default async function CharacterPage({ params }: CharacterPageProps) {
         </div>
       </div>
 
-      {/* Appears in */}
       {character.media?.nodes && character.media.nodes.length > 0 && (
         <section className="mt-12">
           <h2 className="mb-5 text-lg font-semibold text-foreground">Appears in</h2>
@@ -125,7 +119,7 @@ export default async function CharacterPage({ params }: CharacterPageProps) {
               return (
                 <Link
                   key={m.id}
-                  href={getMediaHref(m.id)}
+                  href={getMediaHref(m.id, m.type)}
                   className="anime-card group overflow-hidden rounded-xl border border-border bg-card"
                 >
                   <div className="relative aspect-[3/4] overflow-hidden">

@@ -13,6 +13,12 @@
   --muted: #71717a;
   --score: #fbbf24;
   --gradient-end: rgba(11, 13, 19, 1);
+  --nav-bg: rgba(19, 21, 29, 0.60);
+  --nav-border: rgba(255, 255, 255, 0.06);
+  --nav-surface: rgba(255, 255, 255, 0.06);
+  --nav-surface-active: rgba(255, 255, 255, 0.08);
+  --nav-surface-hover: rgba(255, 255, 255, 0.05);
+  --nav-separator: rgba(255, 255, 255, 0.08);
   color-scheme: dark;
 }
 
@@ -28,6 +34,12 @@
   --muted: #71717a;
   --score: #d97706;
   --gradient-end: rgba(248, 249, 252, 1);
+  --nav-bg: rgba(255, 255, 255, 0.75);
+  --nav-border: rgba(0, 0, 0, 0.08);
+  --nav-surface: rgba(0, 0, 0, 0.04);
+  --nav-surface-active: rgba(0, 0, 0, 0.07);
+  --nav-surface-hover: rgba(0, 0, 0, 0.04);
+  --nav-separator: rgba(0, 0, 0, 0.08);
   color-scheme: light;
 }
 
@@ -72,6 +84,18 @@ body {
     to bottom,
     transparent 0%,
     color-mix(in srgb, var(--background) 60%, transparent) 50%,
+    var(--background) 100%
+  );
+}
+
+/* Full-bleed hero gradient (homepage) */
+.hero-gradient {
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    transparent 30%,
+    color-mix(in srgb, var(--background) 40%, transparent) 50%,
+    color-mix(in srgb, var(--background) 75%, transparent) 70%,
     var(--background) 100%
   );
 }
@@ -131,6 +155,23 @@ footer {
     color 0.3s ease, box-shadow 0.3s ease;
 }
 
+/* Navbar surface utilities (theme-aware via CSS vars) */
+.nav-surface-hover:hover {
+  background: var(--nav-surface-hover);
+}
+.nav-surface-active {
+  background: var(--nav-surface-active);
+}
+.nav-separator {
+  background: var(--nav-separator);
+}
+.nav-search-input {
+  background: var(--nav-surface);
+}
+.nav-search-input:focus {
+  background: var(--nav-surface-active);
+}
+
 /* Light theme card hover */
 [data-theme="light"] .anime-card:hover {
   box-shadow: 0 12px 40px rgba(99, 102, 241, 0.1);
@@ -138,4 +179,25 @@ footer {
 [data-theme="light"] .genre-chip {
   background: rgba(99, 102, 241, 0.08);
   border-color: rgba(99, 102, 241, 0.15);
+}
+
+/* Fade-in animation (CSS-only, replaces per-element IO) */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(1.5rem); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fade-in 0.7s ease-out both;
+}
+
+/* Floating navbar pill */
+.nav-pill {
+  background: var(--nav-bg);
+  border-color: var(--nav-border);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+}
+
+/* Mobile menu divider */
+.nav-mobile-divider {
+  border-top: 1px solid var(--nav-separator);
 }

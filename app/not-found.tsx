@@ -6,7 +6,7 @@ export default function NotFound() {
       <div className="text-6xl font-bold text-accent">404</div>
       <h1 className="text-2xl font-semibold text-foreground">Page Not Found</h1>
       <p className="max-w-md text-muted">
-        The anime, manga, or character you&apos;re looking for doesn&apos;t exist or has been removed.
+        The anime, manga, or character you're looking for doesn't exist or has been removed.
       </p>
       <Link
         href="/"

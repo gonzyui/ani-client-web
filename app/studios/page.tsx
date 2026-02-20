@@ -1,18 +1,25 @@
+import type { PageInfo, StudioDetail } from "ani-client";
 import { client } from "@/app/lib/client";
-import { STUDIOS_QUERY, type StudioPageResult } from "@/app/lib/queries";
 import PageContainer from "@/app/components/PageContainer";
-import Footer from "@/app/components/Footer";
 import InfiniteStudioGrid from "@/app/components/InfiniteStudioGrid";
+import { STUDIOS_LIST_QUERY } from "@/app/lib/queries";
+
+interface RawStudioPage {
+  Page: {
+    pageInfo: PageInfo;
+    studios: StudioDetail[];
+  };
+}
 
 export const metadata = {
-  title: "Studios — AniClient",
+  title: "Studios",
   description: "Browse animation studios and their productions.",
 };
 
 export const revalidate = 900;
 
 export default async function StudiosBrowsePage() {
-  const data = await client.raw<StudioPageResult>(STUDIOS_QUERY, {
+  const data = await client.raw<RawStudioPage>(STUDIOS_LIST_QUERY, {
     page: 1,
     perPage: 20,
     sort: ["FAVOURITES_DESC"],
@@ -31,8 +38,6 @@ export default async function StudiosBrowsePage() {
         initialItems={data.Page.studios}
         initialPageInfo={data.Page.pageInfo}
       />
-
-      <Footer />
     </PageContainer>
   );
 }

@@ -1,9 +1,16 @@
 import { MediaType } from "ani-client";
+import Link from "next/link";
 import { Suspense } from "react";
 import MediaGrid from "@/app/components/MediaGrid";
 import { CardSkeleton } from "@/app/components/CardSkeleton";
 import { SearchIcon } from "@/app/components/Icons";
 import { client } from "@/app/lib/client";
+import { clampPage } from "@/app/lib/utils";
+
+export const metadata = {
+  title: "Search",
+  description: "Search for anime, manga, and characters on AniClient.",
+};
 
 interface SearchPageProps {
   searchParams: Promise<{ q?: string; type?: string; genre?: string; page?: string }>;
@@ -23,7 +30,6 @@ async function SearchResults({
   const mediaType =
     type === "MANGA" ? MediaType.MANGA : type === "ANIME" ? MediaType.ANIME : undefined;
 
-  // If no query and no genre, show trending for that type
   const results = (query || genre)
     ? await client.searchMedia({
         query: query || undefined,
@@ -56,27 +62,26 @@ async function SearchResults({
         </div>
       )}
 
-      {/* Pagination */}
       {results.pageInfo.lastPage && results.pageInfo.lastPage > 1 && (
         <div className="mt-8 flex items-center justify-center gap-3">
           {page > 1 && (
-            <a
+            <Link
               href={`/search?q=${encodeURIComponent(query)}&type=${type ?? ""}${genre ? `&genre=${encodeURIComponent(genre)}` : ""}&page=${page - 1}`}
               className="rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-card-hover"
             >
               &larr; Previous
-            </a>
+            </Link>
           )}
           <span className="text-sm text-muted">
             Page {page} of {results.pageInfo.lastPage}
           </span>
           {results.pageInfo.hasNextPage && (
-            <a
+            <Link
               href={`/search?q=${encodeURIComponent(query)}&type=${type ?? ""}${genre ? `&genre=${encodeURIComponent(genre)}` : ""}&page=${page + 1}`}
               className="rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-card-hover"
             >
               Next &rarr;
-            </a>
+            </Link>
           )}
         </div>
       )}
@@ -105,20 +110,21 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   const query = params.q ?? "";
   const type = params.type;
   const genre = params.genre;
-  const page = Math.max(1, parseInt(params.page ?? "1", 10) || 1);
+  const page = clampPage(params.page ?? "1");
 
   return (
     <main className="mx-auto min-h-screen max-w-7xl px-4 py-8 sm:px-6">
-      {/* Type filter tabs */}
-      <div className="mb-8 flex gap-2">
+      <div className="mb-8 flex gap-2" role="tablist" aria-label="Media type filter">
         {[
           { label: "All", value: "" },
           { label: "Anime", value: "ANIME" },
           { label: "Manga", value: "MANGA" },
         ].map((tab) => (
-          <a
+          <Link
             key={tab.value}
             href={`/search?q=${encodeURIComponent(query)}&type=${tab.value}`}
+            role="tab"
+            aria-selected={(type ?? "") === tab.value}
             className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
               (type ?? "") === tab.value
                 ? "bg-accent text-white"
@@ -126,7 +132,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
             }`}
           >
             {tab.label}
-          </a>
+          </Link>
         ))}
       </div>
 

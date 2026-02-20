@@ -1,12 +1,10 @@
 export default function Loading() {
   return (
     <main className="min-h-screen">
-      {/* Banner skeleton */}
-      <div className="skeleton h-72 w-full sm:h-80 md:h-96" />
+      <div className="-mt-[4.5rem] skeleton h-72 w-full sm:h-80 md:h-96" />
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="relative -mt-28 flex flex-col gap-6 sm:-mt-36 sm:flex-row sm:items-end sm:gap-8">
-          {/* Cover skeleton */}
           <div className="skeleton h-[280px] w-[200px] shrink-0 rounded-xl" />
           <div className="flex flex-col gap-3 pb-2">
             <div className="skeleton h-10 w-72 rounded" />
@@ -19,7 +17,6 @@ export default function Loading() {
           </div>
         </div>
 
-        {/* Content skeleton */}
         <div className="mt-10 grid gap-8 sm:grid-cols-3">
           <div className="space-y-3 sm:col-span-2">
             <div className="skeleton h-6 w-24 rounded" />

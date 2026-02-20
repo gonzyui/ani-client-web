@@ -1,4 +1,5 @@
 import { AniListClient } from "ani-client";
+import { CACHE_MAX_SIZE, CACHE_TTL_MS } from "@/app/lib/constants";
 
 const globalForAniList = globalThis as unknown as {
   aniListClient: AniListClient | undefined;
@@ -7,11 +8,7 @@ const globalForAniList = globalThis as unknown as {
 export const client =
   globalForAniList.aniListClient ??
   new AniListClient({
-    cache: {
-      ttl: 1000 * 60 * 30, // 30 min
-      maxSize: 500,
-      enabled: true,
-    },
+    cache: { ttl: CACHE_TTL_MS, maxSize: CACHE_MAX_SIZE, enabled: true },
   });
 
 if (process.env.NODE_ENV !== "production") {

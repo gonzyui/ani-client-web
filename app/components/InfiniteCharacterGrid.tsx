@@ -20,6 +20,7 @@ export default function InfiniteCharacterGrid({
     initialItems,
     initialHasMore: initialPageInfo.hasNextPage ?? false,
     fetchUrl: (page) => `/api/characters?page=${page}`,
+    getKey: (c) => c.id,
   });
 
   return (
@@ -38,7 +39,7 @@ export default function InfiniteCharacterGrid({
 
       {!hasMore && items.length > 0 && (
         <p className="mt-8 text-center text-sm text-muted">
-          You&apos;ve reached the end — {items.length} characters loaded
+          You've reached the end — {items.length} characters loaded
         </p>
       )}
     </>
@@ -70,9 +71,9 @@ function CharacterCard({ character }: { character: Character }) {
         )}
 
         {character.favourites != null && character.favourites > 0 && (
-          <div className="absolute right-2 top-2 flex items-center gap-1 rounded-lg bg-black/70 px-2 py-1 text-xs font-medium text-red-400 backdrop-blur-sm">
-            <HeartIcon className="h-3 w-3 fill-red-400" />
-            {character.favourites.toLocaleString()}
+          <div className="absolute right-2 top-2 flex items-center gap-1 rounded-lg bg-card/80 px-2 py-1 text-xs font-medium text-red-400 backdrop-blur-sm">
+            <HeartIcon className="h-3 w-3 fill-current" />
+            {character.favourites.toLocaleString('en-US')}
           </div>
         )}
       </div>
