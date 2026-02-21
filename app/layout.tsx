@@ -47,12 +47,21 @@ export const metadata: Metadata = {
     description:
       "Browse trending anime, search your favorites, explore characters, staff, studios, and get personalized recommendations.",
     url: "https://ani-client-web.vercel.app",
+    images: [
+      {
+        url: "/icon.png",
+        width: 128,
+        height: 128,
+        alt: "AniClient",
+      },
+    ],
   },
   twitter: {
-    card: "summary_large_image",
+    card: "summary",
     title: "AniClient — Discover Anime & Manga",
     description:
       "Browse trending anime, search your favorites, explore characters, staff, studios, and get personalized recommendations.",
+    images: ["/icon.png"],
   },
   robots: {
     index: true,
