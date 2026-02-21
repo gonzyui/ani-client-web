@@ -14,7 +14,7 @@ const geistSans = Geist({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://ani-client-web.vercel.app"),
+  metadataBase: new URL("https://aniclient.vercel.app"),
   title: {
     default: "AniClient — Discover Anime & Manga",
     template: "%s | AniClient",
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     title: "AniClient — Discover Anime & Manga",
     description:
       "Browse trending anime, search your favorites, explore characters, staff, studios, and get personalized recommendations.",
-    url: "https://ani-client-web.vercel.app",
+    url: "https://anilient.vercel.app",
     images: [
       {
         url: "/icon.png",
@@ -75,7 +75,7 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: "https://ani-client-web.vercel.app",
+    canonical: "https://aniclient.vercel.app",
   },
 };
 

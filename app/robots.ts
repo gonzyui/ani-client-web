@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const BASE = "https://ani-client-web.vercel.app";
+const BASE = "https://aniclient.vercel.app";
 
 export default function robots(): MetadataRoute.Robots {
   return {
