@@ -1,10 +1,11 @@
 import { AniListError } from "ani-client";
 import { NextRequest, NextResponse } from "next/server";
 import { client } from "@/app/lib/client";
+import { clampPage } from "@/app/lib/utils";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
-  const page = Math.max(1, parseInt(searchParams.get("page") ?? "1", 10) || 1);
+  const page = clampPage(searchParams.get("page"));
   const perPage = 20;
 
   try {

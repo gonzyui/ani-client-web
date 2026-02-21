@@ -5,9 +5,10 @@ import { formatScore, getMediaHref } from "@/app/lib/utils";
 
 interface MediaCardProps {
   media: Media;
+  rank?: number;
 }
 
-export default function MediaCard({ media }: MediaCardProps) {
+export default function MediaCard({ media, rank }: MediaCardProps) {
   const title =
     media.title.english || media.title.romaji || media.title.native || "Unknown";
   const image =
@@ -31,6 +32,12 @@ export default function MediaCard({ media }: MediaCardProps) {
             <div className="flex h-full w-full items-center justify-center bg-card-hover text-muted">
               No Image
             </div>
+          )}
+
+          {rank != null && (
+            <span className="absolute bottom-2 left-2 z-10 flex h-7 w-7 items-center justify-center rounded-lg bg-accent text-[11px] font-extrabold text-white shadow-lg">
+              {rank}
+            </span>
           )}
 
           {media.averageScore && (

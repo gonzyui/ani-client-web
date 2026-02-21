@@ -10,7 +10,7 @@ export default function Footer() {
             rel="noopener noreferrer"
             className="text-accent-light hover:underline"
           >
-            ani-client
+            @gonzyui/ani-client
           </a>{" "}
           &middot; Data from{" "}
           <a

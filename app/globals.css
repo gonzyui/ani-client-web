@@ -54,7 +54,6 @@
   --color-muted: var(--muted);
   --color-score: var(--score);
   --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
 * {
@@ -200,4 +199,20 @@ footer {
 /* Mobile menu divider */
 .nav-mobile-divider {
   border-top: 1px solid var(--nav-separator);
+}
+
+/* ── View Transitions ── */
+@keyframes slide-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slide-out {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-4px); }
+}
+::view-transition-old(root) {
+  animation: slide-out 0.15s ease-in forwards;
+}
+::view-transition-new(root) {
+  animation: slide-in 0.2s ease-out forwards;
 }

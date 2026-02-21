@@ -51,7 +51,7 @@ export async function GET(request: NextRequest) {
         data = await client.searchMedia({
           type,
           status: MediaStatus.RELEASING,
-          sort: [MediaSort.TRENDING],
+          sort: ["TRENDING_DESC" as MediaSort],
           page,
           perPage,
         });
@@ -67,6 +67,7 @@ export async function GET(request: NextRequest) {
           season,
           seasonYear: year,
           type,
+          sort: ["TRENDING_DESC" as MediaSort],
           page,
           perPage,
         });

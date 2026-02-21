@@ -1,113 +1,92 @@
 import type { AiringSchedule } from "ani-client";
-import Image from "next/image";
-import Link from "next/link";
+import { AiringSort } from "ani-client";
 import { client } from "@/app/lib/client";
 import PageContainer from "@/app/components/PageContainer";
-import { formatScore, getMediaHref } from "@/app/lib/utils";
+import AiringCalendar from "@/app/components/AiringCalendar";
 
 export const metadata = {
   title: "Airing Schedule",
-  description: "See which anime episodes have recently aired.",
+  description:
+    "Weekly anime airing schedule — see which episodes air each day this week. Never miss a new episode.",
+  openGraph: {
+    title: "Airing Schedule | AniClient",
+    description:
+      "Weekly anime airing schedule — see which episodes air each day.",
+  },
 };
 
 export const revalidate = 900;
 
-function formatAiringTime(airingAt: number): string {
-  const date = new Date(airingAt * 1000);
+/** Build Mon→Sun date range for the current week */
+function getWeekRange() {
   const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const diffH = Math.floor(diffMs / (1000 * 60 * 60));
-
-  if (diffH < 1) return "Just aired";
-  if (diffH < 24) return `${diffH}h ago`;
-  const diffD = Math.floor(diffH / 24);
-  return `${diffD}d ago`;
+  const day = now.getDay(); // 0=Sun
+  const diffToMon = day === 0 ? -6 : 1 - day;
+  const monday = new Date(now);
+  monday.setHours(0, 0, 0, 0);
+  monday.setDate(monday.getDate() + diffToMon);
+  const sunday = new Date(monday);
+  sunday.setDate(sunday.getDate() + 6);
+  sunday.setHours(23, 59, 59, 999);
+  return { monday, sunday };
 }
 
 export default async function AiringPage() {
-  const data = await client.getAiredEpisodes({ perPage: 30 });
+  const { monday, sunday } = getWeekRange();
+
+  // Fetch the full week of airing episodes (paginated)
+  const allEpisodes: AiringSchedule[] = [];
+  let page = 1;
+  let hasNext = true;
+  while (hasNext && page <= 10) {
+    const data = await client.getAiredEpisodes({
+      airingAtGreater: Math.floor(monday.getTime() / 1000),
+      airingAtLesser: Math.floor(sunday.getTime() / 1000),
+      sort: [AiringSort.TIME],
+      page,
+      perPage: 50,
+    });
+    allEpisodes.push(...data.results);
+    hasNext = data.pageInfo.hasNextPage ?? false;
+    page++;
+  }
+
+  // Group by day-of-week (0=Mon .. 6=Sun)
+  const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+  const grouped: Record<number, AiringSchedule[]> = {};
+  for (let i = 0; i < 7; i++) grouped[i] = [];
+
+  for (const ep of allEpisodes) {
+    const date = new Date(ep.airingAt * 1000);
+    const jsDay = date.getDay(); // 0=Sun
+    const idx = jsDay === 0 ? 6 : jsDay - 1; // shift to Mon=0
+    grouped[idx].push(ep);
+  }
+
+  // Deduplicate by mediaId per day (keep latest episode)
+  for (let i = 0; i < 7; i++) {
+    const seen = new Map<number, AiringSchedule>();
+    for (const ep of grouped[i]) {
+      const existing = seen.get(ep.mediaId);
+      if (!existing || ep.episode > existing.episode) {
+        seen.set(ep.mediaId, ep);
+      }
+    }
+    grouped[i] = Array.from(seen.values());
+  }
+
+  const weekStart = monday.toISOString();
 
   return (
     <PageContainer>
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-foreground">Airing Schedule</h1>
         <p className="mt-2 text-muted">
-          Recently aired anime episodes in the last 24 hours
+          Weekly anime airing calendar — {monday.toLocaleDateString("en-US", { month: "short", day: "numeric" })} to {sunday.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
         </p>
       </div>
 
-      {data.results.length > 0 ? (
-        <div className="space-y-3">
-          {data.results.map((ep: AiringSchedule) => {
-            const media = ep.media;
-            const title = media.title.english || media.title.romaji || "Unknown";
-            const cover = media.coverImage?.large || media.coverImage?.medium;
-
-            return (
-              <Link
-                key={ep.id}
-                href={getMediaHref(media.id, media.type)}
-                className="group flex items-center gap-4 rounded-xl border border-border bg-card p-4 transition-all duration-300 hover:border-accent/40 hover:shadow-lg hover:shadow-accent/5"
-              >
-                {cover && (
-                  <div className="relative h-20 w-14 shrink-0 overflow-hidden rounded-lg">
-                    <Image
-                      src={cover}
-                      alt={title}
-                      fill
-                      className="object-cover"
-                      sizes="56px"
-                    />
-                  </div>
-                )}
-
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-semibold text-foreground group-hover:text-accent-light transition-colors">
-                    {title}
-                  </p>
-                  <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted">
-                    <span className="rounded bg-accent/20 px-2 py-0.5 font-medium text-accent-light">
-                      Episode {ep.episode}
-                    </span>
-                    {media.format && (
-                      <span className="uppercase">{media.format.replace(/_/g, " ")}</span>
-                    )}
-                    {media.averageScore && (
-                      <span className="text-score">★ {formatScore(media.averageScore)}</span>
-                    )}
-                  </div>
-                  {media.genres?.length > 0 && (
-                    <div className="mt-1.5 flex flex-wrap gap-1">
-                      {media.genres.slice(0, 3).map((g) => (
-                        <span key={g} className="genre-chip rounded-full px-2 py-0.5 text-[10px] font-medium">
-                          {g}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                <div className="shrink-0 text-right">
-                  <p className="text-xs font-medium text-muted">
-                    {formatAiringTime(ep.airingAt)}
-                  </p>
-                </div>
-              </Link>
-            );
-          })}
-        </div>
-      ) : (
-        <div className="flex flex-col items-center gap-4 py-20 text-center">
-          <div className="text-5xl opacity-30" aria-hidden="true">📺</div>
-          <h2 className="text-xl font-semibold text-foreground">
-            No recently aired episodes
-          </h2>
-          <p className="text-muted">
-            Check back later for the latest airing schedule.
-          </p>
-        </div>
-      )}
-
+      <AiringCalendar days={days} grouped={grouped} weekStart={weekStart} />
     </PageContainer>
   );
 }

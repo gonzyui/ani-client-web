@@ -55,9 +55,20 @@ export async function generateMetadata({ params }: StudioPageProps) {
   const { id } = await params;
   try {
     const studio = await client.getStudio(parseInt(id, 10));
+    const description = `Explore anime produced by ${studio.name}.`;
     return {
       title: `${studio.name} — AniClient`,
-      description: `Explore anime produced by ${studio.name}.`,
+      description,
+      openGraph: {
+        title: `${studio.name} — AniClient`,
+        description,
+        type: "website",
+      },
+      twitter: {
+        card: "summary",
+        title: `${studio.name} — AniClient`,
+        description,
+      },
     };
   } catch {
     return { title: "Not Found — AniClient" };
@@ -207,9 +218,10 @@ export default async function StudioPage({ params }: StudioPageProps) {
           <h2 className="mb-5 text-lg font-semibold text-foreground">Staff</h2>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
             {staffList.map((person) => (
-              <div
+              <Link
                 key={person.id}
-                className="overflow-hidden rounded-xl border border-border bg-card"
+                href={`/staff/${person.id}`}
+                className="group overflow-hidden rounded-xl border border-border bg-card transition-colors hover:border-accent/40"
               >
                 <div className="relative aspect-square overflow-hidden">
                   {person.image ? (
@@ -217,7 +229,7 @@ export default async function StudioPage({ params }: StudioPageProps) {
                       src={person.image}
                       alt={person.name}
                       fill
-                      className="object-cover"
+                      className="object-cover transition-transform duration-300 group-hover:scale-105"
                       sizes="(max-width: 640px) 50vw, 16vw"
                     />
                   ) : (
@@ -227,14 +239,14 @@ export default async function StudioPage({ params }: StudioPageProps) {
                   )}
                 </div>
                 <div className="p-2">
-                  <p className="line-clamp-1 text-xs font-medium text-foreground">
+                  <p className="line-clamp-1 text-xs font-medium text-foreground group-hover:text-accent-light">
                     {person.name}
                   </p>
                   <p className="line-clamp-1 text-[10px] text-muted">
                     {Array.from(person.roles).join(", ")}
                   </p>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </section>

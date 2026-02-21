@@ -1,17 +1,25 @@
 import { NextResponse, type NextRequest } from "next/server";
 
+/** Rate-limit window in ms (1 minute) */
 const WINDOW_MS = 60_000;
+/** Max requests per IP per window */
 const MAX_REQUESTS = 60;
 
 const hits = new Map<string, { count: number; resetAt: number }>();
 
 function getKey(req: NextRequest): string {
-  return req.headers.get("x-forwarded-for") ?? req.headers.get("x-real-ip") ?? "anon";
+  return (
+    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+    req.headers.get("x-real-ip") ??
+    "anon"
+  );
 }
 
-export function proxy(req: NextRequest) {
-  if (!req.nextUrl.pathname.startsWith("/api/")) return NextResponse.next();
-
+/**
+ * API rate-limiter — 60 req/min per IP.
+ * Only runs on `/api/*` routes thanks to the matcher below.
+ */
+export default function proxy(req: NextRequest) {
   const key = getKey(req);
   const now = Date.now();
   const entry = hits.get(key);

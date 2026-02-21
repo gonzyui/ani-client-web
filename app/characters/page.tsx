@@ -1,12 +1,18 @@
 import { CharacterSort } from "ani-client";
 import { client } from "@/app/lib/client";
+import { PER_PAGE_CHARACTERS } from "@/app/lib/constants";
 import PageContainer from "@/app/components/PageContainer";
 import InfiniteCharacterGrid from "@/app/components/InfiniteCharacterGrid";
-import { PER_PAGE_CHARACTERS } from "@/app/lib/constants";
 
 export const metadata = {
   title: "Characters",
-  description: "Browse popular anime and manga characters.",
+  description:
+    "Browse the most popular anime and manga characters. Explore favorites, voice actors, and appearances.",
+  openGraph: {
+    title: "Characters | AniClient",
+    description:
+      "Browse the most popular anime and manga characters.",
+  },
 };
 
 export const revalidate = 900;

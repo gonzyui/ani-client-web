@@ -8,9 +8,13 @@ import { formatScore, getMediaHref } from "@/app/lib/utils";
 
 interface TrendingRankCarouselProps {
   items: Media[];
+  /** Rank offset: first item gets this rank (default 2, since homepage hero is #1) */
+  startRank?: number;
+  /** Media type for correct links (default ANIME) */
+  type?: "ANIME" | "MANGA";
 }
 
-export default function TrendingRankCarousel({ items }: TrendingRankCarouselProps) {
+export default function TrendingRankCarousel({ items, startRank = 2, type = "ANIME" }: TrendingRankCarouselProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const pausedRef = useRef(false);
 
@@ -59,7 +63,7 @@ export default function TrendingRankCarousel({ items }: TrendingRankCarouselProp
       style={{ scrollBehavior: "auto" }}
     >
       {loopedItems.map((anime, i) => {
-        const rank = (i % items.length) + 2;
+        const rank = (i % items.length) + startRank;
         const title =
           anime.title.english || anime.title.romaji || anime.title.native || "Unknown";
         const cover =
@@ -68,7 +72,7 @@ export default function TrendingRankCarousel({ items }: TrendingRankCarouselProp
         return (
           <Link
             key={`${anime.id}-${i}`}
-            href={getMediaHref(anime.id, "ANIME")}
+            href={getMediaHref(anime.id, type)}
             className="group flex shrink-0 items-center gap-3 rounded-lg border border-border bg-card/50 p-2 backdrop-blur-md transition-all duration-300 hover:border-accent/40 hover:bg-card-hover sm:w-full"
             style={{ minWidth: "220px" }}
           >
@@ -97,7 +101,8 @@ export default function TrendingRankCarousel({ items }: TrendingRankCarouselProp
                     ★ {formatScore(anime.averageScore)}
                   </span>
                 )}
-                {anime.episodes && <span>{anime.episodes} eps</span>}
+                {type === "ANIME" && anime.episodes && <span>{anime.episodes} eps</span>}
+                {type === "MANGA" && anime.chapters && <span>{anime.chapters} ch</span>}
                 {anime.format && (
                   <span className="uppercase">{anime.format.replace(/_/g, " ")}</span>
                 )}

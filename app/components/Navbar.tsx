@@ -51,9 +51,18 @@ const NAV_LINKS = [
   { href: "/anime", label: "Anime" },
   { href: "/manga", label: "Manga" },
   { href: "/airing", label: "Airing" },
-  { href: "/characters", label: "Characters" },
-  { href: "/studios", label: "Studios" },
 ];
+
+const OTHER_LINKS = [
+  { href: "/characters", label: "Characters" },
+  { href: "/staff", label: "Staff" },
+  { href: "/studios", label: "Studios" },
+  { href: "/stats", label: "Stats" },
+  { href: "/compare", label: "Compare" },
+  { href: "/recommendation", label: "Recommend" },
+];
+
+const ALL_LINKS = [...NAV_LINKS, ...OTHER_LINKS];
 
 export default function Navbar() {
   const router = useRouter();
@@ -64,12 +73,26 @@ export default function Navbar() {
   const [loading, setLoading] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [otherOpen, setOtherOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const otherRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     setMobileMenuOpen(false);
+    setOtherOpen(false);
   }, [pathname]);
+
+  /* Close "Other" dropdown on outside click */
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (otherRef.current && !otherRef.current.contains(e.target as Node)) {
+        setOtherOpen(false);
+      }
+    }
+    if (otherOpen) document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [otherOpen]);
 
   const search = useCallback(async (q: string) => {
     if (q.trim().length < 2) {
@@ -170,6 +193,44 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
+
+          {/* Other dropdown */}
+          <div ref={otherRef} className="relative">
+            <button
+              onClick={() => setOtherOpen((v) => !v)}
+              className={`flex items-center gap-1 rounded-lg px-3 py-1.5 text-[13px] transition-all duration-200 ${
+                otherOpen || OTHER_LINKS.some((l) => pathname === l.href || pathname.startsWith(l.href + "/"))
+                  ? "nav-surface-active font-medium text-foreground"
+                  : "nav-surface-hover text-muted hover:text-foreground"
+              }`}
+              aria-expanded={otherOpen}
+              aria-haspopup="true"
+            >
+              Other
+              <svg className={`h-3 w-3 transition-transform duration-200 ${otherOpen ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+              </svg>
+            </button>
+            {otherOpen && (
+              <div className="absolute left-1/2 top-full z-[60] mt-2 w-48 -translate-x-1/2 overflow-hidden rounded-xl border border-border bg-card shadow-2xl shadow-black/20">
+                <div className="p-1.5">
+                  {OTHER_LINKS.map((link) => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className={`block rounded-lg px-3 py-2 text-[13px] transition-colors ${
+                        pathname === link.href || pathname.startsWith(link.href + "/")
+                          ? "bg-accent/10 font-medium text-accent-light"
+                          : "text-foreground hover:bg-accent/5"
+                      }`}
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="nav-separator mx-1 hidden h-5 w-px md:block" />
@@ -319,7 +380,7 @@ export default function Navbar() {
       {mobileMenuOpen && (
         <div className="nav-mobile-divider px-2 pb-2 pt-1 md:hidden">
           <div className="flex flex-wrap gap-1">
-            {NAV_LINKS.map((link) => (
+            {ALL_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}

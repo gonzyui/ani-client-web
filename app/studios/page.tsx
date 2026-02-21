@@ -1,19 +1,18 @@
-import type { PageInfo, StudioDetail } from "ani-client";
 import { client } from "@/app/lib/client";
 import PageContainer from "@/app/components/PageContainer";
 import InfiniteStudioGrid from "@/app/components/InfiniteStudioGrid";
 import { STUDIOS_LIST_QUERY } from "@/app/lib/queries";
-
-interface RawStudioPage {
-  Page: {
-    pageInfo: PageInfo;
-    studios: StudioDetail[];
-  };
-}
+import type { RawStudioPage } from "@/app/lib/types";
 
 export const metadata = {
   title: "Studios",
-  description: "Browse animation studios and their productions.",
+  description:
+    "Browse animation studios and their productions. Discover which studios created your favorite anime.",
+  openGraph: {
+    title: "Studios | AniClient",
+    description:
+      "Browse animation studios and their productions.",
+  },
 };
 
 export const revalidate = 900;

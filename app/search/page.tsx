@@ -9,7 +9,13 @@ import { clampPage } from "@/app/lib/utils";
 
 export const metadata = {
   title: "Search",
-  description: "Search for anime, manga, and characters on AniClient.",
+  description:
+    "Search for anime, manga, characters, and studios on AniClient. Find anything in the AniList database.",
+  openGraph: {
+    title: "Search | AniClient",
+    description:
+      "Search for anime, manga, characters, and studios on AniClient.",
+  },
 };
 
 interface SearchPageProps {

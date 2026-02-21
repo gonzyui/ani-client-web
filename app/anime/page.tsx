@@ -1,4 +1,4 @@
-import { MediaSort, MediaStatus, MediaType } from "ani-client";
+import { MediaSort, MediaType } from "ani-client";
 import { client } from "@/app/lib/client";
 import PageContainer from "@/app/components/PageContainer";
 import TabbedMediaBrowser from "@/app/components/TabbedMediaBrowser";
@@ -6,7 +6,13 @@ import { getCurrentSeason } from "@/app/lib/utils";
 
 export const metadata = {
   title: "Browse Anime",
-  description: "Discover trending, top rated, currently airing, seasonal, and upcoming anime.",
+  description:
+    "Discover trending, top rated, currently airing, seasonal, and upcoming anime. Explore thousands of titles on AniClient.",
+  openGraph: {
+    title: "Browse Anime | AniClient",
+    description:
+      "Discover trending, top rated, currently airing, seasonal, and upcoming anime.",
+  },
 };
 
 export const revalidate = 900;
@@ -15,7 +21,7 @@ export default async function AnimeBrowsePage() {
   const { season, year } = getCurrentSeason();
   const seasonLabel = season.charAt(0) + season.slice(1).toLowerCase();
 
-  const [trending, top, airing, seasonal, upcoming, genres] = await Promise.all([
+  const [trending, top, seasonal, upcoming, genres] = await Promise.all([
     client.getTrending(MediaType.ANIME, 1, 20),
     client.searchMedia({
       type: MediaType.ANIME,
@@ -23,17 +29,11 @@ export default async function AnimeBrowsePage() {
       page: 1,
       perPage: 20,
     }),
-    client.searchMedia({
-      type: MediaType.ANIME,
-      status: MediaStatus.RELEASING,
-      sort: [MediaSort.TRENDING],
-      page: 1,
-      perPage: 20,
-    }),
     client.getMediaBySeason({
       season,
       seasonYear: year,
       type: MediaType.ANIME,
+      sort: ["TRENDING_DESC" as MediaSort],
       page: 1,
       perPage: 20,
     }),
@@ -56,7 +56,6 @@ export default async function AnimeBrowsePage() {
         tabs={[
           { id: "trending", label: "Trending", category: "trending", items: trending.results, pageInfo: trending.pageInfo },
           { id: "top", label: "Top 100", category: "top", items: top.results, pageInfo: top.pageInfo },
-          { id: "airing", label: "Currently Airing", category: "airing", items: airing.results, pageInfo: airing.pageInfo },
           { id: "season", label: `${seasonLabel} ${year}`, category: "season", items: seasonal.results, pageInfo: seasonal.pageInfo },
           { id: "upcoming", label: "Upcoming", category: "upcoming", items: upcoming.results, pageInfo: upcoming.pageInfo },
         ]}

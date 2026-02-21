@@ -4,12 +4,14 @@ import type { Media, PageInfo } from "ani-client";
 import { useInfiniteScroll } from "@/app/lib/hooks";
 import { CardSkeleton } from "@/app/components/CardSkeleton";
 import MediaCard from "@/app/components/MediaCard";
+import MediaTable from "@/app/components/MediaTable";
 
 interface InfiniteMediaGridProps {
   initialItems: Media[];
   initialPageInfo: PageInfo;
   type: "ANIME" | "MANGA";
   category?: "trending" | "top" | "airing" | "upcoming" | "season";
+  viewMode?: "grid" | "table";
 }
 
 export default function InfiniteMediaGrid({
@@ -17,6 +19,7 @@ export default function InfiniteMediaGrid({
   initialPageInfo,
   type,
   category = "trending",
+  viewMode = "grid",
 }: InfiniteMediaGridProps) {
   const { items, loading, hasMore, sentinelRef } = useInfiniteScroll<Media>({
     initialItems,
@@ -27,15 +30,28 @@ export default function InfiniteMediaGrid({
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-        {items.map((media) => (
-          <MediaCard key={media.id} media={media} />
-        ))}
-        {loading &&
-          Array.from({ length: 5 }).map((_, i) => (
-            <CardSkeleton key={`skel-${i}`} />
+      {viewMode === "table" ? (
+        <>
+          <MediaTable items={items} preserveOrder={category === "trending"} />
+          {loading && (
+            <div className="mt-4 space-y-2">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <div key={`tskel-${i}`} className="skeleton h-14 w-full rounded-lg" />
+              ))}
+            </div>
+          )}
+        </>
+      ) : (
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+          {items.map((media, i) => (
+            <MediaCard key={media.id} media={media} rank={category === "trending" ? i + 1 : undefined} />
           ))}
-      </div>
+          {loading &&
+            Array.from({ length: 5 }).map((_, i) => (
+              <CardSkeleton key={`skel-${i}`} />
+            ))}
+        </div>
+      )}
 
       {hasMore && <div ref={sentinelRef} className="h-10" />}
 
